@@ -118,7 +118,7 @@ class ErrorHandler {
         $caption = '<div style="font-size: 15pt !important; font-weight: bold !important; padding: 5px 5px 5px 10px !important; border-bottom: 2px solid #888 !important; background-color: #FFF194 !important;">'.$this->_noticeCaption.' ('.$errno.')</div>';
         $content = '<div style="padding: 5px !important; background-color: #E6E6E6 !important;">
                     <p style="margin: 0 auto !important;">Notice occurred in File <b>"'.$errfile.'"</b> in line <b>'.$errline.'</b></p>
-                    <p style="margin: 0 auto !important;"><b>Message:</b> '.$errstr.'</p>
+                    <p style="margin: 0 auto !important;"><b>Message:</b> '.htmlspecialchars( $errstr ).'</p>
                     </div>';
         $outer = '<div style="margin: 10px !important; border: 2px solid #888 !important; font-family: Calibri, Helvetica, Verdana, Arial !important; font-size: 13pt !important; color: #000 !important; text-align: left !important;">'.$caption.$content.'</div>';
 
@@ -129,7 +129,7 @@ class ErrorHandler {
         $caption = '<div style="font-size: 15pt !important; font-weight: bold !important; padding: 5px 5px 5px 10px !important; border-bottom: 2px solid #888 !important; background-color: #F79545 !important;">'.$this->_warningCaption.' ('.$errno.')</div>';
         $content = '<div style="padding: 5px !important; background-color: #E6E6E6 !important;">
                     <p style="margin: 0 auto !important;">Warning occurred in File <b>"'.$errfile.'"</b> in line <b>'.$errline.'</b></p>
-                    <p style="margin: 0 auto !important;"><b>Message:</b> '.$errstr.'</p>
+                    <p style="margin: 0 auto !important;"><b>Message:</b> '.htmlspecialchars( $errstr ).'</p>
                     </div>';
         $outer = '<div style="margin: 10px !important; border: 2px solid #888 !important; font-family: Calibri, Helvetica, Verdana, Arial !important; font-size: 13pt !important; color: #000 !important; text-align: left !important;">'.$caption.$content.'</div>';
 
@@ -142,7 +142,7 @@ class ErrorHandler {
         $parsedBacktrace = $this->parseBacktrace( $backtrace );
         
         $content = '<p class="errorInfo">Error occurred in File <b>"'.$errfile.'"</b> in line <b>'.$errline.'</b></p>'.
-                   '<p class="errorMessage"><b>Message:</b> '.$errstr.'</p>';
+                   '<p class="errorMessage"><b>Message:</b> '.htmlspecialchars( $errstr ).'</p>';
         
         if ( $backtrace != false )
             $content .= '<div class="backtrace"><div class="stCaption">Backtrace</div><pre class="stContent">'.$parsedBacktrace.'</pre></div>';
