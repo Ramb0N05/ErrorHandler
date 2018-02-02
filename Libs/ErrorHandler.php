@@ -5,12 +5,21 @@
  * File Created: Monday, 18th December 2017 1:04:58 pm
  * Author: ramon1611
  * -----
- * Last Modified: Monday, 29th January 2018 2:44:41 pm
+ * Last Modified: Friday, 2nd February 2018 10:16:45 am
  * Modified By: ramon1611
  */
 
+/**
+ * Namespace ramon1611\Libs
+ */
 namespace ramon1611\Libs;
 
+/**
+ * Class ErrorHandler
+ * 
+ * @api
+ * @package ErrorHandler
+ */
 class ErrorHandler {
     private $_excludeFiles = NULL;
     private $_errorStylesheet = NULL;
@@ -19,10 +28,22 @@ class ErrorHandler {
     private $_errorCaption = 'Fatal Error!';
     private $_configCompleted = false;
 
+    /**
+     * Constructor
+     * 
+     * @param array $confArr
+     * @return void
+     */
     public function __construct( array $confArr ) {
         $this->setConfig( $confArr );
     }
 
+    /**
+     * Sets the config
+     * 
+     * @param array $confArr
+     * @return void
+     */
     public function setConfig( array $confArr ) {
         $this->_excludeFiles = ( isset( $confArr['excludeFiles'] ) ? $confArr['excludeFiles'] : NULL );
         $this->_errorStylesheet = ( isset( $confArr['errorStylesheet'] ) ? $confArr['errorStylesheet'] : NULL );
@@ -33,7 +54,17 @@ class ErrorHandler {
         $this->_configCompleted = true;
     }
 
-    public function throw( $errno, $errstr, $errfile, $errline, array $errcontext ) {
+    /**
+     * Handles errors and throws them
+     * 
+     * @param int $errno The level of the error raised
+     * @param string $errstr Error message
+     * @param string $errfile The filename that the error was raised in
+     * @param int $errline The line number the error was raised at
+     * @param array $errcontext Array of every variable that existed in the scope the error was triggered in
+     * @return bool
+     */
+    public function throwError( int $errno, string $errstr, string $errfile, int $errline, array $errcontext ) {
         if ( !( error_reporting() & $errno ) )
             return false;
         else {
@@ -106,15 +137,29 @@ class ErrorHandler {
         }
     }
 
+    /**
+     * Registers the handler in PHP
+     * 
+     * @param void
+     * @return mixed Returns the output of set_error_handler() or false if config is not completed
+     */
     public function registerHandler() {
         if ( $this->_configCompleted )
-            return set_error_handler( [ $this, 'throw' ] );
+            return set_error_handler( [ $this, 'throwError' ] );
         else
             return false;
     }
 
-
-    private function generateNotice( $errfile, $errline, $errstr, $errno ) {
+    /**
+     * Generates an error message for a notice
+     * 
+     * @param string $errfile The filename that the error was raised in
+     * @param int $errline The line number the error was raised at
+     * @param string $errstr Error message
+     * @param int $errno The level of the error raised
+     * @return string
+     */
+    private function generateNotice( string $errfile, int $errline, string $errstr,  int $errno ) {
         $caption = '<div style="font-size: 15pt !important; font-weight: bold !important; padding: 5px 5px 5px 10px !important; border-bottom: 2px solid #888 !important; background-color: #FFF194 !important;">'.$this->_noticeCaption.' ('.$errno.')</div>';
         $content = '<div style="padding: 5px !important; background-color: #E6E6E6 !important;">
                     <p style="margin: 0 auto !important;">Notice occurred in File <b>"'.$errfile.'"</b> in line <b>'.$errline.'</b></p>
@@ -125,7 +170,16 @@ class ErrorHandler {
         return $outer;
     }
 
-    private function generateWarning( $errfile, $errline, $errstr, $errno ) {
+    /**
+     * Generates an error message for a warning
+     * 
+     * @param string $errfile The filename that the error was raised in
+     * @param int $errline The line number the error was raised at
+     * @param string $errstr Error message
+     * @param int $errno The level of the error raised
+     * @return string
+     */
+    private function generateWarning( string $errfile, int $errline, string $errstr, int $errno ) {
         $caption = '<div style="font-size: 15pt !important; font-weight: bold !important; padding: 5px 5px 5px 10px !important; border-bottom: 2px solid #888 !important; background-color: #F79545 !important;">'.$this->_warningCaption.' ('.$errno.')</div>';
         $content = '<div style="padding: 5px !important; background-color: #E6E6E6 !important;">
                     <p style="margin: 0 auto !important;">Warning occurred in File <b>"'.$errfile.'"</b> in line <b>'.$errline.'</b></p>
@@ -136,7 +190,18 @@ class ErrorHandler {
         return $outer;
     }
 
-    private function generateError( $errfile, $errline, $errstr, $errno, array $errcontext = NULL, $title = NULL ) {
+    /**
+     * Generates an error message for a error
+     * 
+     * @param string $errfile The filename that the error was raised in
+     * @param int $errline The line number the error was raised at
+     * @param string $errstr Error message
+     * @param int $errno The level of the error raised
+     * @param array $errcontext Array of every variable that existed in the scope the error was triggered in. Default is NULL
+     * @param string $title A custom title of the error message. Default is NULL
+     * @return string
+     */
+    private function generateError( string $errfile, int $errline, string $errstr, int $errno, array $errcontext = NULL, string $title = NULL ) {
         $caption = ( isset( $title ) ? $title : $this->_errorCaption ).' ('.$errno.')';
         $backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 );
         $parsedBacktrace = $this->parseBacktrace( $backtrace );
@@ -150,7 +215,7 @@ class ErrorHandler {
         $return = '<!DOCTYPE html>
         <html>
             <head>
-                <title>'.$title.'</title>
+                <title>'.$caption.'</title>
                 '.( isset( $this->_errorStylesheet ) ? '<link rel="stylesheet" type="text/css" href="'.$this->_errorStylesheet.'">' : '' ).'
             </head>
             
@@ -166,6 +231,12 @@ class ErrorHandler {
         return $return;
     }
 
+    /**
+     * Parsing a backtrace as string
+     * 
+     * @param array $debugBacktrace A backtrace generated by debug_backtrace()
+     * @return mixed Returns the string of the backtrace or false if no backtrace data is provided
+     */
     private function parseBacktrace( array $debugBacktrace ) {
         if ( isset( $debugBacktrace ) ) {
             $out = '';
