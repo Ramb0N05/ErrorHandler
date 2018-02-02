@@ -32,7 +32,7 @@ ErrorHandler::__construct( array $confArr ): void
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$confArr` | **array** |  |
+| `$confArr` | **array** | Array of settings |
 
 
 
@@ -47,14 +47,21 @@ Sets the config
 ErrorHandler::setConfig( array $confArr ): void
 ```
 
-
+<pre>pattern of $confArr:
+[
+     'excludeFiles'      => [ 'fileToExclude1.xyz', 'excludeMe2.php' ],
+     'errorStylesheet'   => './css/theCustomErrorStylesheet.css',       # Must be a valid path on HTML-level
+     'noticeCaption'     => 'Caption of a notice',
+     'warningCaption'    => 'MyWarningMessage',
+     'errorCaption'      => 'MyOwnError'
+]</pre>
 
 
 **Parameters:**
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `$confArr` | **array** |  |
+| `$confArr` | **array** | Array of settings |
 
 
 

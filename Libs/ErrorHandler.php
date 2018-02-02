@@ -5,7 +5,7 @@
  * File Created: Monday, 18th December 2017 1:04:58 pm
  * Author: ramon1611
  * -----
- * Last Modified: Friday, 2nd February 2018 10:16:45 am
+ * Last Modified: Friday, 2nd February 2018 10:28:51 am
  * Modified By: ramon1611
  */
 
@@ -21,17 +21,35 @@ namespace ramon1611\Libs;
  * @package ErrorHandler
  */
 class ErrorHandler {
+    /**
+     * @var array|null Array of files to exclude from error handling
+     */
     private $_excludeFiles = NULL;
+    /**
+     * @var string|null Custom stylesheet for the error message
+     */
     private $_errorStylesheet = NULL;
+    /**
+     * @var string Caption of a notice message
+     */
     private $_noticeCaption = 'Notice!';
+    /**
+     * @var string Caption of a warning message
+     */
     private $_warningCaption = 'Warning!';
+    /**
+     * @var string Caption of a error message
+     */
     private $_errorCaption = 'Fatal Error!';
+    /**
+     * @var bool|false Specifies that the config is completed
+     */
     private $_configCompleted = false;
 
     /**
      * Constructor
      * 
-     * @param array $confArr
+     * @param array $confArr Array of settings
      * @return void
      */
     public function __construct( array $confArr ) {
@@ -41,7 +59,16 @@ class ErrorHandler {
     /**
      * Sets the config
      * 
-     * @param array $confArr
+     * <pre>pattern of $confArr:
+     * [
+     *      'excludeFiles'      => [ 'fileToExclude1.xyz', 'excludeMe2.php' ],
+     *      'errorStylesheet'   => './css/theCustomErrorStylesheet.css',       # Must be a valid path on HTML-level
+     *      'noticeCaption'     => 'Caption of a notice',
+     *      'warningCaption'    => 'MyWarningMessage',
+     *      'errorCaption'      => 'MyOwnError'
+     * ]</pre>
+     * 
+     * @param array $confArr Array of settings
      * @return void
      */
     public function setConfig( array $confArr ) {
